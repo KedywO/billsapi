@@ -20,6 +20,7 @@ async function login(req, res) {
 
     // authentication successful
     const token = jwt.sign({ sub: user.id }, process.env.SECRET, { expiresIn: '7d' });
+    res.cookie('token', token, { httpOnly: true });
     res.json({token: token});
 }
 

@@ -1,27 +1,48 @@
-const jwt = require('express-jwt');
+const jwt = require('jsonwebtoken');
 const db = require('./database');
 require('dotenv').config();
 
 module.exports = authorize;
 
-function authorize() {
+// function authorize() {
+//     const secret = process.env.SECRET;
+//     return [
+//         async (req, res, next) => {
+//         try {
+//             jwt({secret: process.env.SECRET,
+//                 getToken: req.cookies.token,
+//                 algorithms: ['HS256']})
+//             const user = await db.User.findByPk(req.user.sub);
+//
+//             if (!user)
+//                 return res.status(401).json({message: "Unauthorized"});
+//
+//             req.user = user.get();
+//             next();
+//         }catch (e) {
+//             res.json({error: e});
+//         }
+//
+//         }
+//     ];
+// }
+
+function authorize (req,res, next) {
     const secret = process.env.SECRET;
-    return [
-        jwt({secret, algorithms: ['HS256']}),
 
-        async (req, res, next) => {
-        try {
-            const user = await db.User.findByPk(req.user.sub);
+    const token = req.cookies.token;
 
-            if (!user)
-                return res.status(401).json({message: "Unauthorized"});
-
-            req.user = user.get();
+    if(!token) throw "Unauthorized";
+    console.log("poka1");
+    jwt.verify(token, secret, (err,data)=>{
+        if(err){
+            throw "Unauthorized";
+        }
+        if(data.sub){
+            req.userId = data.sub;
+            console.log("poka");
             next();
-        }catch (e) {
-            res.json({error: "error"});
-        }
+        }});
 
-        }
-    ];
 }
+

@@ -5,6 +5,6 @@ const authorize = require('../config/authorize');
 
 module.exports = router;
 
-router.post('/',authorize(), drinkService.addDrink);
+router.post('/',authorize, drinkService.addDrink);
 router.get('/', drinkService.getAll);
-router.delete('/:id',authorize(), drinkService.deleteDrink);
+router.delete('/:id',authorize, drinkService.deleteDrink);

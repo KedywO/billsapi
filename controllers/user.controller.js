@@ -6,11 +6,11 @@ const userService = require('../services/user.service');
 const authorize = require('../config/authorize');
 require('dotenv').config();
 
-router.get('/:id',authorize(), authorizeSingleUser, userService.getById);
+router.get('/:id',authorize, authorizeSingleUser, userService.getById);
 router.post('/login',loginValidation,userService.login);
 // router.get('/',userService.getAll);
 router.post('/register', registerValidation, userService.register);
-router.patch('/:id',authorize(),authorizeSingleUser,  userService.update);
+router.patch('/:id',authorize,authorizeSingleUser,  userService.update);
 
 
 module.exports = router;
@@ -18,7 +18,8 @@ module.exports = router;
 
 function authorizeSingleUser(req, res, next) {
     try {
-        let token = req.get('Authorization') && req.get('Authorization').split(' ')[1];
+        // let token = req.get('Authorization') && req.get('Authorization').split(' ')[1];
+        let token = req.cookies.token;
         const user = jwt.verify(token, process.env.SECRET);
         if(user.sub == req.params.id){
             next();
