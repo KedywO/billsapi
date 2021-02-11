@@ -18,8 +18,8 @@ module.exports = router;
 
 function authorizeSingleUser(req, res, next) {
     try {
-        // let token = req.get('Authorization') && req.get('Authorization').split(' ')[1];
-        let token = req.cookies.token;
+        let token = req.get('Authorization') && req.get('Authorization').split(' ')[1];
+        // let token = req.cookies.token;
         const user = jwt.verify(token, process.env.SECRET);
         if(user.sub == req.params.id){
             next();

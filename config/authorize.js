@@ -30,17 +30,17 @@ module.exports = authorize;
 function authorize (req,res, next) {
     const secret = process.env.SECRET;
 
-    const token = req.cookies.token;
+    const token = req.get('Authorization') && req.get('Authorization').split(' ')[1];
 
     if(!token) throw "Unauthorized";
-    console.log("poka1");
     jwt.verify(token, secret, (err,data)=>{
         if(err){
+            res.json("Unauthorized")
             throw "Unauthorized";
+
         }
         if(data.sub){
             req.userId = data.sub;
-            console.log("poka");
             next();
         }});
 
